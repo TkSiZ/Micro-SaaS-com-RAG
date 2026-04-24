@@ -1,6 +1,5 @@
 import fitz
 import pdfplumber
-import config as C
 from pathlib import Path
 
 def load_pdfs(folder: str) -> list[dict]:
@@ -53,14 +52,3 @@ def load_pdfs(folder: str) -> list[dict]:
 
     print(f"\nTotal: {len(documents)} PDFs carregados")
     return documents
-
-def main():
-    docs = load_pdfs(C.DATA_PATH)
-
-    for doc in docs:
-        print(f"\nArquivo: {doc['source']}")
-        print(f"Caracteres: {doc['chars']}")
-        print(f"Prévia: {doc['text'][:200]}...")
-
-if __name__ == "__main__":
-    main()
