@@ -9,7 +9,8 @@ from chunking import create_chunks
 from embeddings import index_chunks
 from config import DATA_PATH
 
-if __name__ == "__main__":
+
+def main():
     print("Carregando os pdfs")
     docs = load_pdfs(DATA_PATH)
     print("Criando os chunks")
@@ -17,3 +18,6 @@ if __name__ == "__main__":
     print("Indexando e adicionando ao vectordb")
     index_chunks(chunks)
     print("Pipeline finalizada")
+
+if __name__ == "__main__":
+    main()

@@ -1,8 +1,7 @@
-from src import ingestion
+from src import pipeline
 
 def main():
-    print("Hello from micro-saas-com-rag!")
-    ingestion.main()
+    pipeline.main()
 
 
 if __name__ == "__main__":
