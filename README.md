@@ -1,10 +1,10 @@
-# Tutor de Teoria Musical — Micro SaaS com RAG
+# 🎵 Tutor de Teoria Musical — Micro SaaS com RAG
 
 Sistema de perguntas e respostas sobre teoria musical baseado em um pipeline RAG (*Retrieval-Augmented Generation*) com modelos de linguagem e embeddings open-source.
 
 ---
 
-## Definição do Problema
+## 📌 Definição do Problema
 
 Estudantes de teoria musical frequentemente precisam consultar conceitos específicos em livros extensos — escalas, intervalos, cadências, modos, harmonia funcional — sem saber em qual capítulo encontrá-los. O processo é lento e fragmentado.
 
@@ -15,7 +15,7 @@ Este projeto resolve esse problema oferecendo um **tutor conversacional** capaz 
 
 ---
 
-## Arquitetura
+## 🏗️ Arquitetura
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -37,16 +37,7 @@ Este projeto resolve esse problema oferecendo um **tutor conversacional** capaz 
 
 ---
 
-## Pipeline RAG — Fluxo de uma pergunta
-
-1. O usuário digita uma pergunta em português na interface
-2. A pergunta é convertida em embedding pelo `multilingual-e5-large`
-3. O ChromaDB busca os 5 chunks mais similares por cosseno
-4. Os chunks recuperados são inseridos no prompt como contexto
-5. O LLaMA 3 gera a resposta em português com base apenas no contexto fornecido
-6. Se a resposta não estiver no contexto, o modelo informa que não encontrou nos materiais
-
-## Decisões Técnicas
+## 🔧 Decisões Técnicas
 
 ### Extração de texto
 Utiliza **PyMuPDF** como extrator primário por sua velocidade e fidelidade ao texto. Caso falhe (PDFs escaneados ou corrompidos), faz fallback automático para **pdfplumber**.
@@ -82,7 +73,7 @@ Utiliza `RecursiveCharacterTextSplitter` com:
 
 ---
 
-## Instalação
+## ⚙️ Instalação
 
 ### Pré-requisitos
 
@@ -113,7 +104,7 @@ uv sync
 
 ---
 
-## Uso
+## 🚀 Uso
 
 ### Passo 1 — Indexar os documentos (apenas na primeira vez)
 
@@ -151,7 +142,7 @@ Acesse em: `http://localhost:8501`
 
 ---
 
-## Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 ```
 Micro-SaaS-com-RAG/
@@ -172,7 +163,46 @@ Micro-SaaS-com-RAG/
 
 ---
 
-## Limitações
+## 📊 Avaliação
+
+A avaliação foi realizada com o framework **RAGAS** (*Retrieval-Augmented Generation Assessment*), usando o próprio **LLaMA 3** como juiz e o **multilingual-e5-large** como modelo de embedding — os mesmos utilizados no pipeline, garantindo consistência metodológica. Foram avaliadas 7 perguntas sobre o conteúdo do livro, com ground truth baseado exclusivamente no texto do PDF.
+
+### Métricas avaliadas
+
+| Métrica | O que mede | Resultado |
+|---|---|---|
+| **Faithfulness** | A resposta é fiel ao contexto recuperado? (baixo = alucinação) | **0.917** |
+| **Answer Relevancy** | A resposta endereça a pergunta feita? (baixo = resposta tangencial) | **0.957** |
+| **Context Precision** | Os chunks recuperados são relevantes? (baixo = ruído no retriever) | **0.885** |
+| **Context Recall** | O retriever encontrou tudo que precisava? (baixo = chunks perdidos) | **0.952** |
+
+### Resultados por pergunta
+
+| Pergunta | Faithfulness | Answer Relevancy | Context Precision | Context Recall |
+|---|---|---|---|---|
+| What is a perfect interval? | 1.000 | 0.947 | 0.806 | 0.667 |
+| What is a diatonic triad? | 1.000 | 0.903 | 0.806 | 1.000 |
+| What is binary form in music? | 0.833 | 0.996 | 1.000 | 1.000 |
+| What is a suspension in harmony? | 1.000 | 0.981 | 1.000 | 1.000 |
+| What is music notation? | 1.000 | 0.983 | 1.000 | 1.000 |
+| What are the species of counterpoint? | 0.750 | 0.965 | 0.583 | 1.000 |
+| What is inflection in music intervals? | 0.833 | 0.927 | 1.000 | 1.000 |
+
+### Análise de casos de falha
+
+Dois casos apresentaram degradação de métricas:
+
+**"What is a perfect interval?"** — context_recall de 0.667, o mais baixo observado. O retriever não trouxe todos os chunks necessários para cobrir completamente o ground truth. Hipótese: o conteúdo sobre intervalos perfeitos está distribuído em múltiplas páginas do livro, e o chunking por caracteres fragmentou as definições entre chunks não consecutivos.
+
+**"What are the species of counterpoint?"** — context_precision de 0.583, o mais baixo observado. O retriever trouxe chunks com ruído — trechos relacionados a contraponto mas não diretamente relevantes para a pergunta. Hipótese: o conteúdo de contraponto por espécies é técnico e denso, com terminologia compartilhada entre seções distintas, o que confunde a busca por similaridade semântica.
+
+### Metodologia e limitações da avaliação
+
+A avaliação usou **LLM-as-a-judge** com o mesmo modelo que gera as respostas (LLaMA 3), Os resultados são consistentes com avaliação manual realizada durante o desenvolvimento, o que sugere que o viés não foi determinante. O resultado completo está disponível no doc `evaluation/ragas_resultados.csv`.
+
+---
+
+## ⚠️ Limitações
 
 - O sistema responde apenas com base nos documentos indexados — perguntas fora do escopo do material resultam em "não encontrei nos materiais"
 - PDFs escaneados (imagens) não são suportados sem OCR adicional
@@ -181,10 +211,10 @@ Micro-SaaS-com-RAG/
 
 ---
 
-## Autores
+## 👥 Autores
 
 Desenvolvido como projeto acadêmico — Universidade do Estado do Amazonas (UEA), Escola Superior de Tecnologia.
 
-- [Nome 1]
-- [Nome 2]  
-- [Nome 3]
+- Matheus Takashi Maruoka Vieira
+- Rubens Takashi Maruoka Vieira
+- Vinícius Castro Coutinho
